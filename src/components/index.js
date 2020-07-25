@@ -1,9 +1,9 @@
 import App from './App/App';
-import TaskList from  './TaskList/TaskList';
-import TaskElement from './TaskElement/TaskElement';
+import CarList from  './CarList/CarList';
+import CarElement from './CarElement/CarElement';
 
 export {
   App,
-  TaskList,
-  TaskElement,
+  CarList,
+  CarElement,
 };

@@ -1,14 +1,20 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-import { TaskList } from '../index';
+import { Car } from '../../models';
+import { CarList } from '../index';
 import './App.css';
 
 class App extends React.Component {
   state = {
     clicks: 0,
-    tasks: [],
+    /** @type {Car[]} */
+    cars: [],
     filter: '',
   };
+
+  modelRef = React.createRef();
+  colorRef = React.createRef();
 
   increment = () => {
     this.setState({ clicks: this.state.clicks + 1 });
@@ -18,23 +24,42 @@ class App extends React.Component {
     this.setState({ clicks: this.state.clicks - 1 });
   };
 
-  addTask = () => {
-    const id = Math.round(Math.random() * 100_000_000_000_000);
-    const task = { id, text: `task ${id}` };
+  /**
+   * @param {Event} e
+   */
+  addCar = (e) => {
+    e.preventDefault();
 
-    this.setState({ tasks: [...this.state.tasks, task] });
+    if (!this.modelRef.current.value || !this.colorRef.current.value) {
+      return;
+    }
+
+    const car = new Car({
+      id: uuidv4(),
+      model: this.modelRef.current.value,
+      color: this.colorRef.current.value,
+    });
+
+    this.setState({ cars: [...this.state.cars, car] });
   };
 
-  deleteTask = () => {
-    this.setState({ tasks: this.state.tasks.slice(0, -1) });
+  /**
+   * @param {Event} e
+   */
+  deleteCar = (e) => {
+    e.preventDefault();
+    this.setState({ cars: this.state.cars.slice(1) });
   };
 
+  /**
+   * @param {Event} e
+   */
   readFilter = (e) => {
     this.setState({ filter: e.target.value });
   };
 
   render() {
-    const { clicks, tasks, filter } = this.state;
+    const { clicks, cars, filter } = this.state;
 
     return (
       <main>
@@ -44,11 +69,19 @@ class App extends React.Component {
           <button onClick={this.decrement}>decrement</button>
         </section>
         <section>
-          <TaskList tasks={tasks} filter={filter} />
-          <button onClick={this.addTask}>Add Task</button>
-          <button onClick={this.deleteTask}>Delete Task</button>
-          <label htmlFor="filter">filter:</label>
-          <input id="filter" name="filter" placeholder="123" onChange={this.readFilter} />
+          <CarList cars={cars} filter={filter} />
+          <form>
+            <label htmlFor="model">model:</label>
+            <input ref={this.modelRef} id="model" name="model" placeholder="BMW" />
+            <label htmlFor="color">color:</label>
+            <input ref={this.colorRef} id="color" name="color" placeholder="red" />
+            <button onClick={this.addCar}>Add Car</button>
+            <button onClick={this.deleteCar}>Delete Car</button>
+          </form>
+          <div>
+            <label htmlFor="filter">color filter:</label>
+            <input id="filter" name="filter" placeholder="blue" onChange={this.readFilter} />
+          </div>
         </section>
       </main>
     );
