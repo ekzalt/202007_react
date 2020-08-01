@@ -1,0 +1,16 @@
+.product-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-form-input {
+  margin: 1%;
+  padding: 1%;
+  width: 40%;
+}
+
+.product-form-add {
+  margin: 1%;
+  padding: 1%;
+  width: 10%;
+}

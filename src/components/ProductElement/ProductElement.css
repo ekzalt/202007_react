@@ -1,0 +1,19 @@
+.product {
+  background: rgb(215, 244, 255);
+  margin: 1%;
+  padding: 1%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.product-name {
+  width: 10%;
+}
+
+.product-description {
+  width: 30%;
+}
+
+.product-price {
+  width: 10%;
+}

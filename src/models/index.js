@@ -5,3 +5,12 @@ export class Car {
     this.color = color;
   }
 }
+
+export class Product {
+  constructor({ id = '', name = '', description = '', price = 0 }) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.price = price;
+  }
+}

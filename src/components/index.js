@@ -1,9 +1,11 @@
 import App from './App/App';
-import CarList from  './CarList/CarList';
-import CarElement from './CarElement/CarElement';
+import ProductList from  './ProductList/ProductList';
+import ProductElement from './ProductElement/ProductElement';
+import ProductForm from './ProductForm/ProductForm';
 
 export {
   App,
-  CarList,
-  CarElement,
+  ProductList,
+  ProductElement,
+  ProductForm,
 };
