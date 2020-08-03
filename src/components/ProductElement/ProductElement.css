@@ -6,12 +6,16 @@
   justify-content: space-between;
 }
 
+.product-selected {
+  background: rgb(215, 255, 220);
+}
+
 .product-name {
   width: 10%;
 }
 
 .product-description {
-  width: 30%;
+  width: 20%;
 }
 
 .product-price {

@@ -1,12 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-import { Product } from '../../models';
+import { Category } from '../../models';
 import './ProductForm.css';
 
 class ProductForm extends React.Component {
-  /** @type {Product} */
+  static propTypes = {
+    addProduct: PropTypes.func.isRequired,
+  };
+
   state = {
     name: '',
+    category: '',
     description: '',
     price: 0,
   };
@@ -35,13 +40,14 @@ class ProductForm extends React.Component {
 
     this.setState({
       name: '',
+      category: '',
       description: '',
       price: 0,
     });
   };
 
   render() {
-    const { name, description, price } = this.state;
+    const { name, category, description, price } = this.state;
 
     return (
       <form className="product-form" onSubmit={this.addProduct}>
@@ -51,6 +57,14 @@ class ProductForm extends React.Component {
           placeholder="Parmesan"
           value={name}
           onChange={this.onChange} />
+        <select 
+          className="product-form-select"
+          name="category"
+          value={category}
+          onChange={this.onChange}>
+          <option key="none" value=""></option>
+          {Object.values(Category).map(value => <option key={value} value={value}>{value}</option>)}
+        </select>
         <input
           className="product-form-input"
           name="description"
@@ -63,7 +77,7 @@ class ProductForm extends React.Component {
           value={price}
           type="number"
           onChange={this.onChange} />
-        <button className="product-form-add" type="submit">Add</button>
+        <button className="product-form-button" type="submit">Add</button>
       </form>
     );
   }
