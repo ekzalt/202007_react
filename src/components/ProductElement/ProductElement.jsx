@@ -32,7 +32,11 @@ class ProductElement extends React.Component {
     });
   };
 
-  deleteProduct = () => {
+  /**
+   * @param {Event} e
+   */
+  deleteProduct = (e) => {
+    e.stopPropagation();
     const { product, deleteProduct } = this.props;
 
     deleteProduct(product.id);
