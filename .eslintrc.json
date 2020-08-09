@@ -4,8 +4,8 @@
     "es2020": true
   },
   "extends": [
-    "plugin:react/recommended",
-    "airbnb"
+    "react-app",
+    "plugin:react/recommended"
   ],
   "parserOptions": {
     "ecmaFeatures": {

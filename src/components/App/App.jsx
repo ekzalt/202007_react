@@ -1,107 +1,153 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 import { ProductList, ProductForm } from '../index';
 import './App.css';
 
-class App extends React.PureComponent {
-  state = {
+/**
+ * @param {{ productService }} props
+ */
+const App = ({ productService }) => {
+  const [state, setState] = useState({
     products: [],
     total: 0,
     selected: 0,
-  };
+  });
 
-  componentDidMount() {
-    const { productService } = this.props;
+  // useEffect instead of componentDidMount and componentDidUpdate
+  useEffect(
+    () => {
+      productService.getProducts()
+        .then((products) => setState({
+          products,
+          total: productService.calculateTotalPrice(products),
+          selected: productService.calculateSelectedPrice(products),
+        }));
+    },
+    [productService],
+  );
 
-    productService
-      .getProducts()
-      .then(products => this.setState({
-        products,
-        total: productService.calculateTotalPrice(products),
-        selected: productService.calculateSelectedPrice(products),
-      }));
-  }
-
-  addProduct = data => {
-    const { productService } = this.props;
-
-    productService
-      .addProduct(this.state.products, data)
-      .then(products => this.setState({
-        products,
-        total: productService.calculateTotalPrice(products),
-        selected: productService.calculateSelectedPrice(products),
-      }));
-  };
-
-  /**
-   * @param {string} id
-   */
-  deleteProduct = id => {
-    const { productService } = this.props;
-
-    productService
-      .deleteProduct(this.state.products, id)
-      .then(products => this.setState({
+  /*
+  const addProduct = (product) => {
+    productService.addProduct(state.products, product)
+      .then((products) => setState({
         products,
         total: productService.calculateTotalPrice(products),
         selected: productService.calculateSelectedPrice(products),
       }));
   };
+  */
 
-  deleteSelectedProducts = () => {
-    if (!this.state.products.find(({ selected }) => selected)) {
+  const addProduct = useCallback(
+    (product) => {
+      productService.addProduct(state.products, product)
+        .then((products) => setState({
+          products,
+          total: productService.calculateTotalPrice(products),
+          selected: productService.calculateSelectedPrice(products),
+        }));
+    },
+    [productService, state],
+  );
+
+  /*
+  const deleteProduct = (id) => {
+    productService.deleteProduct(state.products, id)
+      .then((products) => setState({
+        products,
+        total: productService.calculateTotalPrice(products),
+        selected: productService.calculateSelectedPrice(products),
+      }));
+  };
+  */
+
+  const deleteProduct = useCallback(
+    (id) => {
+      productService.deleteProduct(state.products, id)
+        .then((products) => setState({
+          products,
+          total: productService.calculateTotalPrice(products),
+          selected: productService.calculateSelectedPrice(products),
+        }));
+    },
+    [productService, state],
+  );
+
+  /*
+  const deleteSelectedProducts = () => {
+    if (!state.products.some(({ selected }) => selected)) {
       return;
     }
 
-    const { productService } = this.props;
-
-    productService
-      .deleteSelectedProducts(this.state.products)
-      .then(products => this.setState({
+    productService.deleteSelectedProducts(state.products)
+      .then((products) => setState({
         products,
         total: productService.calculateTotalPrice(products),
         selected: productService.calculateSelectedPrice(products),
       }));
   };
+  */
 
-  /**
-   * @param {string} id
-   */
-  updateProduct = (product) => {
-    const { productService } = this.props;
-    const { products } = this.state;
+  const deleteSelectedProducts = useCallback(
+    () => {
+      if (!state.products.some(({ selected }) => selected)) {
+        return;
+      }
 
-    productService
-      .updateProduct(products, product)
-      .then(products => this.setState({
+      productService.deleteSelectedProducts(state.products)
+        .then((products) => setState({
+          products,
+          total: productService.calculateTotalPrice(products),
+          selected: productService.calculateSelectedPrice(products),
+        }));
+    },
+    [productService, state],
+  );
+
+  /*
+  const updateProduct = (product) => {
+    productService.updateProduct(state.products, product)
+      .then((products) => setState({
         products,
         total: productService.calculateTotalPrice(products),
         selected: productService.calculateSelectedPrice(products),
       }));
   };
+  */
 
-  render() {
-    const { products, total, selected } = this.state;
+  const updateProduct = useCallback(
+    (product) => {
+      productService.updateProduct(state.products, product)
+        .then((products) => setState({
+          products,
+          total: productService.calculateTotalPrice(products),
+          selected: productService.calculateSelectedPrice(products),
+        }));
+    },
+    [productService, state],
+  );
 
-    return (
-      <main>
-        <ProductList
-          products={products}
-          deleteProduct={this.deleteProduct}
-          updateProduct={this.updateProduct} />
-        <button
-          className="product-form-button"
-          onClick={this.deleteSelectedProducts}>
-          Delete Selected
+  return (
+    <main>
+      <ProductList
+        products={state.products}
+        deleteProduct={deleteProduct}
+        updateProduct={updateProduct} />
+      <button
+        className="product-form-button"
+        onClick={deleteSelectedProducts}>
+        Delete Selected
         </button>
-        <p className="total-price">
-          Total price: {total}, selected price: {selected}
-        </p>
-        <ProductForm addProduct={this.addProduct} />
-      </main>
-    );
-  }
-}
+      <p className="total-price">
+        Total price: {state.total}, selected price: {state.selected}
+      </p>
+      <ProductForm addProduct={addProduct} />
+    </main>
+  );
+};
+
+App.propTypes = {
+  productService: PropTypes.instanceOf(Function).isRequired,
+};
 
 export default App;
