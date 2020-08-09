@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { ProductElement } from '../index';
 import './ProductList.css';
 
-class ProductList extends React.Component {
+class ProductList extends React.PureComponent {
   static propTypes = {
     products: PropTypes.array,
     deleteProduct: PropTypes.func.isRequired,

@@ -3,7 +3,7 @@ import React from 'react';
 import { ProductList, ProductForm } from '../index';
 import './App.css';
 
-class App extends React.Component {
+class App extends React.PureComponent {
   state = {
     products: [],
     total: 0,
@@ -50,6 +50,10 @@ class App extends React.Component {
   };
 
   deleteSelectedProducts = () => {
+    if (!this.state.products.find(({ selected }) => selected)) {
+      return;
+    }
+
     const { productService } = this.props;
 
     productService
@@ -85,7 +89,7 @@ class App extends React.Component {
         <ProductList
           products={products}
           deleteProduct={this.deleteProduct}
-          updateProduct={this.updateProduct}/>
+          updateProduct={this.updateProduct} />
         <button
           className="product-form-button"
           onClick={this.deleteSelectedProducts}>

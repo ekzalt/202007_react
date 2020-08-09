@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Category } from '../../models';
 import './ProductForm.css';
 
-class ProductForm extends React.Component {
+class ProductForm extends React.PureComponent {
   static propTypes = {
     addProduct: PropTypes.func.isRequired,
   };
