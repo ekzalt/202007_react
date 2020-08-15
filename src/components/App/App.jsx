@@ -1,95 +1,55 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
+import { Product } from '../../models';
+import { productsActions } from '../../store/actions';
 import { ProductList, ProductForm } from '../index';
 import './App.css';
 
+/**
+ * @typedef IProductsState
+ * @property {Product[]} list
+ * @property {number} total
+ * @property {number} selected
+ */
+
 class App extends React.PureComponent {
-  state = {
-    products: [],
-    total: 0,
-    selected: 0,
+
+  static propTypes = {
+    products: PropTypes.shape({
+      list: PropTypes.arrayOf(PropTypes.instanceOf(Product)),
+      total: PropTypes.number,
+      selected: PropTypes.number,
+    }),
+    productsActions: PropTypes.object.isRequired,
   };
 
-  componentDidMount() {
-    const { productService } = this.props;
-
-    productService
-      .getProducts()
-      .then(products => this.setState({
-        products,
-        total: productService.calculateTotalPrice(products),
-        selected: productService.calculateSelectedPrice(products),
-      }));
-  }
-
-  addProduct = data => {
-    const { productService } = this.props;
-
-    productService
-      .addProduct(this.state.products, data)
-      .then(products => this.setState({
-        products,
-        total: productService.calculateTotalPrice(products),
-        selected: productService.calculateSelectedPrice(products),
-      }));
-  };
-
-  /**
-   * @param {string} id
-   */
-  deleteProduct = id => {
-    const { productService } = this.props;
-
-    productService
-      .deleteProduct(this.state.products, id)
-      .then(products => this.setState({
-        products,
-        total: productService.calculateTotalPrice(products),
-        selected: productService.calculateSelectedPrice(products),
-      }));
+  static defaultProps = {
+    /** @type {IProductsState} */
+    products: {
+      /** @type {Product[]} */
+      list: [],
+      total: 0,
+      selected: 0,
+    },
   };
 
   deleteSelectedProducts = () => {
-    if (!this.state.products.find(({ selected }) => selected)) {
+    if (!this.props.products.list.find(({ selected }) => selected)) {
       return;
     }
 
-    const { productService } = this.props;
-
-    productService
-      .deleteSelectedProducts(this.state.products)
-      .then(products => this.setState({
-        products,
-        total: productService.calculateTotalPrice(products),
-        selected: productService.calculateSelectedPrice(products),
-      }));
-  };
-
-  /**
-   * @param {string} id
-   */
-  updateProduct = (product) => {
-    const { productService } = this.props;
-    const { products } = this.state;
-
-    productService
-      .updateProduct(products, product)
-      .then(products => this.setState({
-        products,
-        total: productService.calculateTotalPrice(products),
-        selected: productService.calculateSelectedPrice(products),
-      }));
+    this.props.productsActions.deleteSelectedProducts();
   };
 
   render() {
-    const { products, total, selected } = this.state;
+    const { list, total, selected } = this.props.products;
 
     return (
       <main>
-        <ProductList
-          products={products}
-          deleteProduct={this.deleteProduct}
-          updateProduct={this.updateProduct} />
+        <ProductList products={list} />
         <button
           className="product-form-button"
           onClick={this.deleteSelectedProducts}>
@@ -98,10 +58,24 @@ class App extends React.PureComponent {
         <p className="total-price">
           Total price: {total}, selected price: {selected}
         </p>
-        <ProductForm addProduct={this.addProduct} />
+        <ProductForm />
       </main>
     );
   }
 }
 
-export default App;
+/**
+ * @param {{ products:IProductsState }} state
+ */
+export const mapStateToProps = ({ products }) => ({
+  products,
+});
+
+/**
+ * @param {Function} dispatch
+ */
+export const mapDispatchToProps = (dispatch) => ({
+  productsActions: bindActionCreators(productsActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

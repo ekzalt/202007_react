@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
+import { mapStateToProps, mapDispatchToProps } from '../App/App';
 import { Product, Category } from '../../models';
 import './ProductElement.css';
 
 class ProductElement extends React.PureComponent {
+
   static propTypes = {
     product: PropTypes.instanceOf(Product).isRequired,
-    deleteProduct: PropTypes.func.isRequired,
+    productsActions: PropTypes.object.isRequired,
   };
 
   state = {
@@ -37,15 +40,15 @@ class ProductElement extends React.PureComponent {
    */
   deleteProduct = (e) => {
     e.stopPropagation();
-    const { product, deleteProduct } = this.props;
+    const { product, productsActions } = this.props;
 
-    deleteProduct(product.id);
+    productsActions.deleteProduct(product);
   };
 
   selectProduct = () => {
-    const { product, updateProduct } = this.props;
+    const { product, productsActions } = this.props;
 
-    updateProduct({
+    productsActions.updateProduct({
       ...product,
       selected: !product.selected,
     });
@@ -74,13 +77,13 @@ class ProductElement extends React.PureComponent {
    */
   saveProduct = (e) => {
     e.stopPropagation();
-    const { updateProduct } = this.props;
+    const { productsActions } = this.props;
 
     if (!this.state.id) {
       return;
     }
 
-    updateProduct({
+    productsActions.updateProduct({
       ...this.state,
       edited: false,
     });
@@ -147,4 +150,4 @@ class ProductElement extends React.PureComponent {
   }
 }
 
-export default ProductElement;
+export default connect(mapStateToProps, mapDispatchToProps)(ProductElement);

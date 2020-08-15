@@ -1,22 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
+import { Product } from '../../models';
+import { mapStateToProps, mapDispatchToProps } from '../App/App';
 import { ProductElement } from '../index';
 import './ProductList.css';
 
 class ProductList extends React.PureComponent {
+
   static propTypes = {
-    products: PropTypes.array,
-    deleteProduct: PropTypes.func.isRequired,
-    updateProduct: PropTypes.func.isRequired,
+    products: PropTypes.shape({
+      list: PropTypes.arrayOf(PropTypes.instanceOf(Product)),
+    }),
   };
 
   static defaultProps = {
-    products: [],
+    products: { list: [] },
   };
 
   render() {
-    const { products, deleteProduct, updateProduct } = this.props;
+    const { list } = this.props.products;
 
     return (
       <ul className="product-list">
@@ -26,15 +30,10 @@ class ProductList extends React.PureComponent {
           <div className="product-description">Description</div>
           <div className="product-price" style={{ width: '31%' }}>Price</div>
         </li>
-        {products.map(product =>
-          <ProductElement
-            key={product.id}
-            product={product}
-            deleteProduct={deleteProduct}
-            updateProduct={updateProduct} />)}
+        {list.map((product) => <ProductElement key={product.id} product={product} />)}
       </ul>
     );
   }
 }
 
-export default ProductList;
+export default connect(mapStateToProps, mapDispatchToProps)(ProductList);

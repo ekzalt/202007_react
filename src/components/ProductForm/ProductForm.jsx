@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import { Category } from '../../models';
+import { mapStateToProps, mapDispatchToProps } from '../App/App';
 import './ProductForm.css';
 
 class ProductForm extends React.PureComponent {
+
   static propTypes = {
-    addProduct: PropTypes.func.isRequired,
+    productsActions: PropTypes.object.isRequired,
   };
 
   state = {
@@ -35,7 +38,7 @@ class ProductForm extends React.PureComponent {
     const { name, description, price } = this.state;
 
     if (name && description && price > 0) {
-      this.props.addProduct(this.state);
+      this.props.productsActions.addProduct(this.state);
     }
 
     this.setState({
@@ -57,7 +60,7 @@ class ProductForm extends React.PureComponent {
           placeholder="Parmesan"
           value={name}
           onChange={this.onChange} />
-        <select 
+        <select
           className="product-form-select"
           name="category"
           value={category}
@@ -83,4 +86,4 @@ class ProductForm extends React.PureComponent {
   }
 }
 
-export default ProductForm;
+export default connect(mapStateToProps, mapDispatchToProps)(ProductForm);

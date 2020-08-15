@@ -17,5 +17,8 @@
   "plugins": [
     "react"
   ],
-  "rules": {}
+  "rules": {
+    "no-unused-vars": "off",
+    "indent": "off"
+  }
 }

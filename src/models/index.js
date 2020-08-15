@@ -1,8 +1,3 @@
 /* eslint-disable */
 
-import Product, { Category } from './Product';
-
-export {
-  Product,
-  Category,
-};
+export { Product, Category, mockProducts } from './Product';
