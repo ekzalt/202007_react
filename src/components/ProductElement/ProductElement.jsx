@@ -94,7 +94,7 @@ const ProductElement = ({ product }) => {
       setState({
         ...state,
         [e.target.name]: e.target.name === 'price'
-          ? parseInt(e.target.value, 10)
+          ? (parseInt(e.target.value, 10) > 1 ? parseInt(e.target.value, 10) : 1)
           : e.target.value,
       });
     },
