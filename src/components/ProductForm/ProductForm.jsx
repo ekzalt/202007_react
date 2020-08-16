@@ -1,13 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 
+import { productsActions } from '../../store/actions';
 import { Category } from '../../models';
 import './ProductForm.css';
 
-/**
- * @param {{ addProduct:Function }} props
- */
-const ProductForm = ({ addProduct }) => {
+const ProductForm = () => {
+  /** @type {Product} */
   const defaultState = {
     name: '',
     category: '',
@@ -15,51 +14,34 @@ const ProductForm = ({ addProduct }) => {
     price: 0,
   };
   const [state, setState] = useState(defaultState);
-
-  /*
-  const addHandler = (e) => {
-    e.preventDefault();
-
-    if (state.name && state.description && state.price > 0) {
-      addProduct(state);
-      setState(defaultState);
-    }
-  };
-  */
+  const dispatch = useDispatch();
 
   const addHandler = useCallback(
+    /**
+     * @param {Event} e
+     */
     (e) => {
       e.preventDefault();
 
       if (state.name && state.description && state.price > 0) {
-        addProduct(state);
+        dispatch(productsActions.addProduct(state));
         setState(defaultState);
       }
     },
-    [state, addProduct, defaultState],
+    [state, setState, defaultState, dispatch],
   );
 
-  /*
-  const onChange = (e) => {
-    setState({
+  const onChange = useCallback(
+    /**
+     * @param {Event} e
+     */
+    (e) => setState({
       ...state,
       [e.target.name]: e.target.name === 'price'
-        ? parseInt(e.target.value, 10)
+        ? (parseInt(e.target.value, 10) > 0 ? parseInt(e.target.value, 10) : 0)
         : e.target.value,
-    });
-  };
-  */
-
-  const onChange = useCallback(
-    (e) => {
-      setState({
-        ...state,
-        [e.target.name]: e.target.name === 'price'
-          ? parseInt(e.target.value, 10)
-          : e.target.value,
-      });
-    },
-    [state],
+    }),
+    [state, setState],
   );
 
   const { name, category, description, price } = state;
@@ -95,10 +77,6 @@ const ProductForm = ({ addProduct }) => {
       <button className="product-form-button" type="submit">Add</button>
     </form>
   );
-};
-
-ProductForm.propTypes = {
-  addProduct: PropTypes.func.isRequired,
 };
 
 export default ProductForm;

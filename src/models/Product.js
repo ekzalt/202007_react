@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export const Category = Object.freeze({
   Alcohol: 'Alcohol',
   Drinks: 'Drinks',
@@ -6,7 +8,7 @@ export const Category = Object.freeze({
   MeatAndMilk: 'Meat & Milk',
 });
 
-export default class Product {
+export class Product {
   constructor({
     id = '',
     name = '',
@@ -25,3 +27,27 @@ export default class Product {
     this.edited = edited;
   }
 }
+
+export const mockProducts = [
+  new Product({
+    id: uuidv4(),
+    name: 'CocaCola',
+    category: Category.Drinks,
+    description: '2 liters',
+    price: 50,
+  }),
+  new Product({
+    id: uuidv4(),
+    name: 'Tomatoes',
+    category: Category.Vegetables,
+    description: 'Cherry',
+    price: 40,
+  }),
+  new Product({
+    id: uuidv4(),
+    name: 'Beef',
+    category: Category.MeatAndMilk,
+    description: '1 kilogram for barbecue',
+    price: 140,
+  }),
+];

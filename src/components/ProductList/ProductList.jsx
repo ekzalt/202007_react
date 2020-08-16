@@ -1,13 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { shallowEqual, useSelector } from 'react-redux';
 
 import { ProductElement } from '../index';
 import './ProductList.css';
 
-/**
- * @param {{ products:Product[], deleteProduct:Function, updateProduct:Function }} props
- */
-const ProductList = ({ products, deleteProduct, updateProduct }) => {
+const ProductList = () => {
+  /** @type {Product[]} */
+  const list = useSelector((state) => state.products.list, shallowEqual);
+
   return (
     <ul className="product-list">
       <li className="product">
@@ -16,24 +16,9 @@ const ProductList = ({ products, deleteProduct, updateProduct }) => {
         <div className="product-description">Description</div>
         <div className="product-price" style={{ width: '31%' }}>Price</div>
       </li>
-      {products.map(product =>
-        <ProductElement
-          key={product.id}
-          product={product}
-          deleteProduct={deleteProduct}
-          updateProduct={updateProduct} />)}
+      {list.map(product => <ProductElement key={product.id} product={product} />)}
     </ul>
   );
-};
-
-ProductList.propTypes = {
-  products: PropTypes.array,
-  deleteProduct: PropTypes.func.isRequired,
-  updateProduct: PropTypes.func.isRequired,
-};
-
-ProductList.defaultProps = {
-  products: [],
 };
 
 export default ProductList;

@@ -1,13 +1,16 @@
 import React, { useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { productsActions } from '../../store/actions';
 import { Product, Category } from '../../models';
 import './ProductElement.css';
 
 /**
- * @param {{ product:Product, deleteProduct:Function, updateProduct:Function }} props
+ * @param {{ product:Product }} props
  */
-const ProductElement = ({ product, deleteProduct, updateProduct }) => {
+const ProductElement = ({ product }) => {
+  /** @type {Product} */
   const defaultState = {
     id: '',
     name: '',
@@ -18,66 +21,47 @@ const ProductElement = ({ product, deleteProduct, updateProduct }) => {
     edited: false,
   };
   const [state, setState] = useState(defaultState);
-
-  /*
-  const selectHandler = () => {
-    updateProduct({ ...product, selected: !product.selected });
-    setState(defaultState);
-  };
-  */
+  const dispatch = useDispatch();
 
   const selectHandler = useCallback(
     () => {
-      updateProduct({ ...product, selected: !product.selected });
+      dispatch(productsActions.updateProduct({
+        ...product,
+        selected: !product.selected,
+      }));
       setState(defaultState);
     },
-    [updateProduct, product, defaultState],
+    [dispatch, product, setState, defaultState],
   );
-
-  /*
-  const deleteHandler = (e) => {
-    e.stopPropagation();
-    deleteProduct(product.id);
-  };
-  */
 
   const deleteHandler = useCallback(
+    /**
+     * @param {Event} e
+     */
     (e) => {
       e.stopPropagation();
-      deleteProduct(product.id);
+      dispatch(productsActions.deleteProduct(product));
     },
-    [deleteProduct, product],
+    [dispatch, product],
   );
-
-  /*
-  const editHandler = (e) => {
-    e.stopPropagation();
-    !state.id ? setState({ ...product, edited: true }) : setState(defaultState);
-  };
-  */
 
   const editHandler = useCallback(
+    /**
+     * @param {Event} e
+     */
     (e) => {
       e.stopPropagation();
-      !state.id ? setState({ ...product, edited: true }) : setState(defaultState);
+      !state.id
+        ? setState({ ...product, edited: true })
+        : setState(defaultState);
     },
-    [product, state, defaultState],
+    [product, state, setState, defaultState],
   );
 
-  /*
-  const saveHandler = (e) => {
-    e.stopPropagation();
-
-    if (!state.id) {
-      return;
-    }
-
-    updateProduct({ ...state, edited: false });
-    setState(defaultState);
-  };
-  */
-
   const saveHandler = useCallback(
+    /**
+     * @param {Event} e
+     */
     (e) => {
       e.stopPropagation();
 
@@ -85,33 +69,27 @@ const ProductElement = ({ product, deleteProduct, updateProduct }) => {
         return;
       }
 
-      updateProduct({ ...state, edited: false });
+      dispatch(productsActions.updateProduct({
+        ...state,
+        edited: false,
+      }));
       setState(defaultState);
     },
-    [updateProduct, state, defaultState],
+    [dispatch, state, setState, defaultState],
   );
 
-  /*
-  const onInputClick = (e) => e.stopPropagation();
-  */
-
   const onInputClick = useCallback(
+    /**
+     * @param {Event} e
+     */
     (e) => e.stopPropagation(),
     [],
   );
 
-  /*
-  const onChange = (e) => {
-    setState({
-      ...state,
-      [e.target.name]: e.target.name === 'price'
-        ? parseInt(e.target.value, 10)
-        : e.target.value,
-    });
-  };
-  */
-
   const onChange = useCallback(
+    /**
+     * @param {Event} e
+     */
     (e) => {
       setState({
         ...state,
@@ -163,7 +141,6 @@ const ProductElement = ({ product, deleteProduct, updateProduct }) => {
 
 ProductElement.propTypes = {
   product: PropTypes.instanceOf(Product).isRequired,
-  deleteProduct: PropTypes.func.isRequired,
 };
 
 export default ProductElement;
