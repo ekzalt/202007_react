@@ -25,7 +25,7 @@ class ProductForm extends React.PureComponent {
   onChange = (e) => {
     this.setState({
       [e.target.name]: e.target.name === 'price'
-        ? parseInt(e.target.value, 10)
+        ? (parseInt(e.target.value, 10) > 0 ? parseInt(e.target.value, 10) : 0)
         : e.target.value,
     });
   };

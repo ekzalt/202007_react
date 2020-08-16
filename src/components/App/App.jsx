@@ -45,11 +45,11 @@ class App extends React.PureComponent {
   };
 
   render() {
-    const { list, total, selected } = this.props.products;
+    const { total, selected } = this.props.products;
 
     return (
       <main>
-        <ProductList products={list} />
+        <ProductList />
         <button
           className="product-form-button"
           onClick={this.deleteSelectedProducts}>

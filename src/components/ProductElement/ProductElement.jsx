@@ -13,6 +13,7 @@ class ProductElement extends React.PureComponent {
     productsActions: PropTypes.object.isRequired,
   };
 
+  /** @type {Product} */
   state = {
     id: '',
     name: '',
@@ -23,17 +24,15 @@ class ProductElement extends React.PureComponent {
     edited: false,
   };
 
-  setDefaultState = () => {
-    this.setState({
-      id: '',
-      name: '',
-      category: '',
-      description: '',
-      price: 0,
-      selected: false,
-      edited: false,
-    });
-  };
+  setDefaultState = () => this.setState({
+    id: '',
+    name: '',
+    category: '',
+    description: '',
+    price: 0,
+    selected: false,
+    edited: false,
+  });
 
   /**
    * @param {Event} e
@@ -103,7 +102,7 @@ class ProductElement extends React.PureComponent {
   onChange = (e) => {
     this.setState({
       [e.target.name]: e.target.name === 'price'
-        ? parseInt(e.target.value, 10)
+        ? (parseInt(e.target.value, 10) > 1 ? parseInt(e.target.value, 10) : 1)
         : e.target.value,
     });
   };
@@ -124,12 +123,12 @@ class ProductElement extends React.PureComponent {
         }
         {selected && edited
           ? <select
-              name="category"
-              value={category}
-              onClick={this.onInputClick}
-              onChange={this.onChange}>
-              {Object.values(Category).map(value => <option key={value} value={value}>{value}</option>)}
-            </select>
+            name="category"
+            value={category}
+            onClick={this.onInputClick}
+            onChange={this.onChange}>
+            {Object.values(Category).map(value => <option key={value} value={value}>{value}</option>)}
+          </select>
           : <div className="product-description">{category}</div>
         }
         {selected && edited

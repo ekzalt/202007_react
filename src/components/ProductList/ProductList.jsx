@@ -7,6 +7,13 @@ import { mapStateToProps, mapDispatchToProps } from '../App/App';
 import { ProductElement } from '../index';
 import './ProductList.css';
 
+/**
+ * @typedef IProductsState
+ * @property {Product[]} list
+ * @property {number} total
+ * @property {number} selected
+ */
+
 class ProductList extends React.PureComponent {
 
   static propTypes = {
@@ -15,12 +22,14 @@ class ProductList extends React.PureComponent {
     }),
   };
 
+  /** @type {{ products:IProductsState }} */
   static defaultProps = {
     products: { list: [] },
   };
 
   render() {
-    const { list } = this.props.products;
+    /** @type {Product[]} */
+    const list = this.props.products.list;
 
     return (
       <ul className="product-list">
