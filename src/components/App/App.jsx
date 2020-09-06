@@ -36,19 +36,26 @@ class App extends React.PureComponent {
     },
   };
 
+  componentDidMount() {
+    this.props.productsActions.getProducts();
+  }
+
   deleteSelectedProducts = () => {
-    if (!this.props.products.list.find(({ selected }) => selected)) {
+    const { list } = this.props.products;
+
+    if (!list.some(({ selected }) => selected)) {
       return;
     }
 
-    this.props.productsActions.deleteSelectedProducts();
+    this.props.productsActions.deleteSelectedProducts(list);
   };
 
   render() {
-    const { total, selected } = this.props.products;
+    const { total, selected, loading } = this.props.products;
 
     return (
       <main>
+        <p className="total-price">{loading ? 'loading...' : 'loaded'}</p>
         <ProductList />
         <button
           className="product-form-button"

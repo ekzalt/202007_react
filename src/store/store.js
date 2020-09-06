@@ -5,9 +5,12 @@ import {
   compose,
   Store,
   StoreEnhancer,
+  applyMiddleware,
 } from 'redux';
+import thunk from 'redux-thunk';
 
 import rootReducer from './reducers';
+import { loggerMdw } from './middlewares';
 
 /** @type {(enhancer:StoreEnhancer) => StoreEnhancer} */
 const composeEnhancers = (
@@ -25,7 +28,7 @@ const composeEnhancers = (
 const configureStore = (preloadedState) => createStore(
   rootReducer,
   preloadedState,
-  composeEnhancers(),
+  composeEnhancers(applyMiddleware(thunk, loggerMdw)),
 );
 
 const store = configureStore({});

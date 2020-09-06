@@ -47,7 +47,7 @@ class ProductElement extends React.PureComponent {
   selectProduct = () => {
     const { product, productsActions } = this.props;
 
-    productsActions.updateProduct({
+    productsActions.modifyProduct({
       ...product,
       selected: !product.selected,
     });
