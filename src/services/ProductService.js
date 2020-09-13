@@ -1,13 +1,59 @@
-import { v4 as uuidv4 } from 'uuid';
-
-import { Product, mockProducts } from '../models';
+import { Product } from '../models';
+import HttpService from './HttpService';
 
 export default class ProductService {
+  constructor() {
+    this.http = HttpService;
+    this.url = 'http://localhost:8080/products';
+  }
+
   /**
-   * @returns {Product[]}
+   * @returns {Promise<Product[]>}
    */
-  static getProducts() {
-    return [...mockProducts];
+  async getProducts() {
+    const res = await this.http.get(this.url);
+    console.log('ProductService.getProducts', res);
+
+    return res.data.products;
+  }
+
+  /**
+   * @param {Product} product
+   * @returns {Promise<Product>}
+   */
+  async addProduct(product) {
+    const res = await this.http.post(this.url, product);
+    console.log('ProductService.addProduct', res);
+
+    return res.data;
+  }
+
+  /**
+   * @param {Product} product
+   * @returns {Promise<Product>}
+   */
+  async deleteProduct(product) {
+    const res = await this.http.delete(`${this.url}/${product.id}`);
+    console.log('ProductService.deleteProduct', res);
+
+    return res.data;
+  }
+
+  /**
+   * @param {Product} product
+   * @returns {Promise<Product>}
+   */
+  async updateProduct(product) {
+    const data = {
+      name: product.name,
+      category: product.category,
+      description: product.description,
+      price: product.price,
+    };
+    const res = await this.http.patch(`${this.url}/${product.id}`, data);
+    console.log('ProductService.updateProduct', res);
+
+    return res.data;
   }
 
   /**
@@ -15,38 +61,7 @@ export default class ProductService {
    * @param {Product} productData
    * @returns {Product[]}
    */
-  static addProduct(products, productData) {
-    const product = new Product({
-      id: uuidv4(),
-      ...productData,
-    });
-
-    return [...products, product];
-  }
-
-  /**
-   * @param {Product[]} products
-   * @param {string} id
-   * @returns {Product[]}
-   */
-  static deleteProduct(products, id) {
-    return products.filter((product) => product.id !== id);
-  }
-
-  /**
-   * @param {Product[]} products
-   * @returns {Product[]}
-   */
-  static deleteSelectedProducts(products) {
-    return products.filter((product) => !product.selected);
-  }
-
-  /**
-   * @param {Product[]} products
-   * @param {Product} productData
-   * @returns {Product[]}
-   */
-  static updateProduct(products, productData) {
+  static modifyProduct(products, productData) {
     const product = new Product(productData);
 
     return products.map((item) => (item.id === product.id ? product : item));

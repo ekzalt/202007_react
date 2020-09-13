@@ -1,4 +1,3 @@
-import { mockProducts } from '../../models';
 import { ProductService } from '../../services';
 import { ProductActionType } from '../constants';
 
@@ -11,9 +10,10 @@ import { ProductActionType } from '../constants';
 
 /** @type {IProductsState} */
 const initialProductsState = {
-  list: mockProducts,
-  total: ProductService.calculateTotalPrice(mockProducts),
-  selected: ProductService.calculateSelectedPrice(mockProducts),
+  list: [],
+  total: 0,
+  selected: 0,
+  loading: false,
 };
 
 /**
@@ -21,13 +21,14 @@ const initialProductsState = {
  * @param {{ type:string, payload:Product }} action
  */
 const productsReducer = (state = initialProductsState, action) => {
-  console.log('productsReducer: state', state, 'action', action);
+  console.log('productsReducer state', state, 'action', action);
   const { type, payload } = action;
 
   switch (type) {
-    case ProductActionType.ADD_PRODUCT:
+    // actions
+    case ProductActionType.MODIFY_PRODUCT:
       {
-        const list = ProductService.addProduct(state.list, payload);
+        const list = ProductService.modifyProduct(state.list, payload);
 
         return {
           ...state,
@@ -36,39 +37,25 @@ const productsReducer = (state = initialProductsState, action) => {
           selected: ProductService.calculateSelectedPrice(list),
         };
       }
-    case ProductActionType.DELETE_PRODUCT:
-      {
-        const list = ProductService.deleteProduct(state.list, payload.id);
-
-        return {
-          ...state,
-          list,
-          total: ProductService.calculateTotalPrice(list),
-          selected: ProductService.calculateSelectedPrice(list),
-        };
-      }
-    case ProductActionType.DELETE_SELECTED_PRODUCTS:
-      {
-        const list = ProductService.deleteSelectedProducts(state.list);
-
-        return {
-          ...state,
-          list,
-          total: ProductService.calculateTotalPrice(list),
-          selected: ProductService.calculateSelectedPrice(list),
-        };
-      }
-    case ProductActionType.UPDATE_PRODUCT:
-      {
-        const list = ProductService.updateProduct(state.list, payload);
-
-        return {
-          ...state,
-          list,
-          total: ProductService.calculateTotalPrice(list),
-          selected: ProductService.calculateSelectedPrice(list),
-        };
-      }
+    // events
+    case ProductActionType.PRODUCTS_LOADING:
+      return {
+        ...state,
+        loading: true,
+      };
+    case ProductActionType.PRODUCTS_RECEIVED:
+      return {
+        ...state,
+        list: payload,
+        total: ProductService.calculateTotalPrice(payload),
+        selected: ProductService.calculateSelectedPrice(payload),
+        loading: false,
+      };
+    case ProductActionType.PRODUCTS_NOT_RECEIVED:
+      return {
+        ...state,
+        loading: false,
+      };
     default:
       return state;
   }

@@ -25,7 +25,7 @@ const ProductElement = ({ product }) => {
 
   const selectHandler = useCallback(
     () => {
-      dispatch(productsActions.updateProduct({
+      dispatch(productsActions.modifyProduct({
         ...product,
         selected: !product.selected,
       }));

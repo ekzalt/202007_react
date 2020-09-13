@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 
+import { Product } from '../../models';
 import { ProductElement } from '../index';
 import './ProductList.css';
 

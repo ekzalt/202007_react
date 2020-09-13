@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { Product } from '../../models';
 import { productsActions } from '../../store/actions';
 import { Category } from '../../models';
 import './ProductForm.css';
