@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Node.js back-end for this app
 
-https://github.com/ekzalt/bff-react
+https://github.com/ekzalt/bff-toys
 
 ## Available Scripts
 

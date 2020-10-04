@@ -1,9 +1,15 @@
 /* eslint-disable */
 
 import HttpService from './HttpService';
-import ProductService from './ProductService';
+import AuthService from './AuthService';
+import CategoryService from './CategoryService';
+import ToyService from './ToyService';
+import TransactionService from './TransactionService';
 
 export {
   HttpService,
-  ProductService,
+  AuthService,
+  CategoryService,
+  ToyService,
+  TransactionService,
 };

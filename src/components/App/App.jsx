@@ -1,57 +1,122 @@
-import React, { useCallback, useEffect } from 'react';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useCallback } from "react";
+import { shallowEqual, useSelector, useDispatch } from "react-redux";
+import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 
-import { Product } from '../../models';
-import { productsActions } from '../../store/actions';
-import { ProductList, ProductForm } from '../index';
-import './App.css';
+import { authActions, mainActions } from "../../store/actions";
+import {
+  NotFoundPage,
+  LoginPage,
+  DashboardPage,
+  CategoriesPage,
+  ToyPage,
+  ToysPage,
+  TransactionPage,
+  TransactionsPage,
+} from "../index";
+import "./App.css";
 
 /**
- * @typedef IProductsState
- * @property {Product[]} list
- * @property {number} total
- * @property {number} selected
+ * @typedef IAuthState
+ * @property {boolean} logged
+ * @property {string} token
+ * @property {Error=} error
  */
 
 const App = () => {
+  /** @type {IAuthState} */
+  const auth = useSelector((state) => state.auth, shallowEqual);
   const dispatch = useDispatch();
-  /** @type {IProductsState} */
-  const products = useSelector((state) => state.products, shallowEqual);
-  const { list, total, selected, loading } = products;
 
   // useEffect instead of componentDidMount and componentDidUpdate
-  useEffect(
-    () => {
-      dispatch(productsActions.getProducts());
+  useEffect(() => {
+    dispatch(mainActions.init());
+  }, [dispatch]);
+
+  const handleLogout = useCallback(
+    /**
+     * @param {Event} e
+     */
+    (e) => {
+      e.preventDefault();
+      dispatch(authActions.logout(auth.token));
     },
-    [dispatch],
+    [dispatch, auth]
   );
 
-  const deleteSelectedProducts = useCallback(
-    () => {
-      if (!list.some((product) => product.selected)) {
-        return;
-      }
-
-      dispatch(productsActions.deleteSelectedProducts(list));
-    },
-    [list, dispatch],
-  );
+  const { logged } = auth;
 
   return (
-    <main>
-      <p className="total-price">{loading ? 'loading...' : 'loaded'}</p>
-      <ProductList />
-      <button
-        className="product-form-button"
-        onClick={deleteSelectedProducts}>
-        Delete Selected
-        </button>
-      <p className="total-price">
-        Total price: {total}, selected price: {selected}
-      </p>
-      <ProductForm />
-    </main>
+    <BrowserRouter>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+            <li>
+              <Link to="/categories">Categories</Link>
+            </li>
+            <li>
+              <Link to="/toys">Toys</Link>
+            </li>
+            <li>
+              <Link to="/transactions">Transactions</Link>
+            </li>
+            <li>
+              {logged ? (
+                <Link to="/logout" onClick={handleLogout} >Logout</Link>
+              ) : (
+                <Link to="/login">Login</Link>
+              )}
+            </li>
+          </ul>
+        </nav>
+
+        <Switch>
+          <Route path="/dashboard">
+            {!logged && <Redirect to="/login" />}
+            <DashboardPage />
+          </Route>
+          <Route exact path="/categories">
+            {!logged && <Redirect to="/login" />}
+            <CategoriesPage />
+          </Route>
+          <Route exact path="/toys/:toyId">
+            {!logged && <Redirect to="/login" />}
+            <ToyPage />
+          </Route>
+          <Route exact path="/toys">
+            {!logged && <Redirect to="/login" />}
+            <ToysPage />
+          </Route>
+          <Route exact path="/transactions/:txId">
+            {!logged && <Redirect to="/login" />}
+            <TransactionPage />
+          </Route>
+          <Route exact path="/transactions">
+            {!logged && <Redirect to="/login" />}
+            <TransactionsPage />
+          </Route>
+          <Route exact path="/login">
+            {logged && <Redirect to="/dashboard" />}
+            <LoginPage />
+          </Route>
+          <Route exact path="/login">
+            {logged && <Redirect to="/dashboard" />}
+            <LoginPage />
+          </Route>
+          <Route exact path="/logout">
+            <Redirect to="/login" />
+          </Route>
+          <Route exact path="/">
+            {logged ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="*">
+            <NotFoundPage />
+          </Route>
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 };
 

@@ -1,0 +1,11 @@
+.TxTable {
+  width: 100%;
+  text-align: center;
+  font-size: small;
+}
+
+.TxTable a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}

@@ -1,9 +1,17 @@
 import { combineReducers } from 'redux';
 
-import productsReducer from './productsReducer';
+import mainReducer from './mainReducer';
+import authReducer from './authReducer';
+import categoryReducer from './categoryReducer';
+import toyReducer from './toyReducer';
+import transactionReducer from './transactionReducer';
 
 const rootReducer = combineReducers({
-  products: productsReducer,
+  main: mainReducer,
+  auth: authReducer,
+  category: categoryReducer,
+  toy: toyReducer,
+  transaction: transactionReducer,
 });
 
 export default rootReducer;
