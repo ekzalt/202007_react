@@ -1,12 +1,8 @@
-import { ToyActionType, MainActionType } from '../constants';
+import { ToyActionType, MainActionType, TransactionActionType } from '../constants';
 import { Toy, TransactionType } from '../../models';
-import { ToyService } from '../../services';
+import { ToyService, TransactionService } from '../../services';
 import { tokenExpired, authService } from './authActions';
-import {
-  transactionService,
-  transactionsNotReceived,
-  transactionsReceived,
-} from './transactionActions';
+
 export const toyService = new ToyService();
 
 // events
@@ -51,6 +47,24 @@ export const toyNotReceived = (error) => ({
 export const toyLoading = () => ({
   type: MainActionType.LOADING,
   payload: null,
+});
+
+// TODO: Resolve cyclic dependencies
+
+/**
+ * @param {Transaction[]} transactions
+ */
+const transactionsReceived = (transactions) => ({
+  type: TransactionActionType.TRANSACTIONS_RECEIVED,
+  payload: transactions,
+});
+
+/**
+ * @param {Error} error
+ */
+const transactionsNotReceived = (error) => ({
+  type: TransactionActionType.TRANSACTIONS_NOT_RECEIVED,
+  payload: error,
 });
 
 // actions
@@ -140,6 +154,7 @@ export const addToyWithTransaction = (token, toy) => (dispatch, getState) => {
     return Promise.resolve();
   }
 
+  const transactionService = new TransactionService();
   dispatch(toyLoading());
 
   return toyService

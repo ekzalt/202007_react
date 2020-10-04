@@ -25,9 +25,9 @@ export default class ToyService {
 
     console.log('ToyService.getToys', res);
 
-    return res && res.data.toys
+    return res && res.data && res.data.toys
       ? { data: res.data.toys, error: null }
-      : { data: [], error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: [], error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -49,9 +49,9 @@ export default class ToyService {
 
     console.log('ToyService.getToyById', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -85,9 +85,9 @@ export default class ToyService {
 
     console.log('ToyService.addToy', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -109,9 +109,9 @@ export default class ToyService {
 
     console.log('ToyService.deleteToy', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -144,9 +144,9 @@ export default class ToyService {
 
     console.log('ToyService.replaceToy', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -179,8 +179,8 @@ export default class ToyService {
 
     console.log('ToyService.updateToy', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 }

@@ -1,6 +1,6 @@
-import { TransactionActionType, MainActionType } from '../constants';
+import { TransactionActionType, MainActionType, ToyActionType } from '../constants';
 import { Transaction } from '../../models';
-import { TransactionService } from '../../services';
+import { TransactionService, ToyService } from '../../services';
 import { tokenExpired, authService } from './authActions';
 
 export const transactionService = new TransactionService();
@@ -47,6 +47,24 @@ export const transactionNotReceived = (error) => ({
 export const transactionLoading = () => ({
   type: MainActionType.LOADING,
   payload: null,
+});
+
+// TODO: Resolve cyclic dependencies
+
+/**
+ * @param {Toy[]} toys
+ */
+const toysReceived = (toys) => ({
+  type: ToyActionType.TOYS_RECEIVED,
+  payload: toys,
+});
+
+/**
+ * @param {Error} error
+ */
+const toysNotReceived = (error) => ({
+  type: ToyActionType.TOYS_NOT_RECEIVED,
+  payload: error,
 });
 
 // actions
@@ -107,22 +125,29 @@ export const getTransactionById = (token, id) => (dispatch, getState) => {
  * @param {Transaction} tx
  */
 export const addTransaction = (token, tx) => (dispatch, getState) => {
+  const toyService = new ToyService();
   dispatch(transactionLoading());
 
   return transactionService
     .addTransaction(token, tx)
-    .then(() => transactionService.getTransactions(token))
-    .then(({ data, error }) => {
-      if (error) {
-        if (error.message === 'Token expired') {
-          authService.removeToken();
-          dispatch(tokenExpired());
-        }
+    .then(() => Promise.all([
+      toyService.getToys(token),
+      transactionService.getTransactions(token),
+    ]))
+    .then(results => {
+      const [toysResult, txResult] = results;
 
-        dispatch(transactionsNotReceived(error));
-        return;
+      if ((toysResult.error && toysResult.error.message === 'Token expired') || (txResult.error && txResult.error.message === 'Token expired')) {
+        authService.removeToken();
+        dispatch(tokenExpired());
       }
 
-      dispatch(transactionsReceived(data));
+      toysResult.error
+        ? dispatch(toysNotReceived(toysResult.error))
+        : dispatch(toysReceived(toysResult.data));
+
+      txResult.error
+        ? dispatch(transactionsNotReceived(txResult.error))
+        : dispatch(transactionsReceived(txResult.data));
     });
 };

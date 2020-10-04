@@ -22,7 +22,7 @@ export default class AuthService {
 
     console.log('AuthService.login', res);
 
-    return res && res.data.accessToken
+    return res && res.data && res.data.accessToken
       ? { data: res.data.accessToken, error: null }
       : { data: null, error: new Error('Incorrect email or password') };
   }
@@ -68,7 +68,7 @@ export default class AuthService {
 
     return res && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**

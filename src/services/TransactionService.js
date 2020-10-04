@@ -25,9 +25,9 @@ export default class TransactionService {
 
     console.log('TransactionService.getTransactions', res);
 
-    return res && res.data.transactions
+    return res && res.data && res.data.transactions
       ? { data: res.data.transactions, error: null }
-      : { data: [], error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: [], error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -49,9 +49,9 @@ export default class TransactionService {
 
     console.log('TransactionService.getTransactionById', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -80,8 +80,8 @@ export default class TransactionService {
 
     console.log('TransactionService.addTransaction', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 }

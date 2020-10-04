@@ -25,9 +25,9 @@ export default class CategoryService {
 
     console.log('CategoryService.getCategories', res);
 
-    return res && res.data.categories
+    return res && res.data && res.data.categories
       ? { data: res.data.categories, error: null }
-      : { data: [], error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: [], error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -49,9 +49,9 @@ export default class CategoryService {
 
     console.log('CategoryService.getCategoryById', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -76,9 +76,9 @@ export default class CategoryService {
 
     console.log('CategoryService.addCategory', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -100,9 +100,9 @@ export default class CategoryService {
 
     console.log('CategoryService.deleteCategory', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 
   /**
@@ -127,8 +127,8 @@ export default class CategoryService {
 
     console.log('CategoryService.replaceCategory', res);
 
-    return res && res.data.id
+    return res && res.data && res.data.id
       ? { data: res.data, error: null }
-      : { data: null, error: err && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
+      : { data: null, error: err && err.response && err.response.status === 401 ? new Error('Token expired') : new Error('Something went wrong') };
   }
 }
