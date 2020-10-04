@@ -2,11 +2,17 @@ import React from 'react';
 import { shallowEqual, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { Transaction } from '../../../models';
+import { Toy, Transaction } from '../../../models';
 
 /**
  * @typedef IMainState
  * @property {boolean} loading
+ */
+
+/**
+ * @typedef IToyState
+ * @property {Toy[]} list
+ * @property {Error=} error
  */
 
 /**
@@ -18,6 +24,8 @@ import { Transaction } from '../../../models';
 const TransactionPage = () => {
   /** @type {IMainState} */
   const mainState = useSelector((state) => state.main, shallowEqual);
+  /** @type {IToyState} */
+  const toyState = useSelector((state) => state.toy, shallowEqual);
   /** @type {ITransactionState} */
   const transactionState = useSelector((state) => state.transaction, shallowEqual);
   const { txId } = useParams();
@@ -29,7 +37,14 @@ const TransactionPage = () => {
     content =  <p>Loading...</p>;
   } else {
     if (tx) {
-      content = <pre>{JSON.stringify(tx, null, 2)}</pre>; // TODO: add TxElement
+      content = (
+      <div>
+        <h3>Toys in warehouse</h3>
+        <pre>{JSON.stringify(toyState.list, null, 2)}</pre>
+        <h3>Transaction details</h3>
+        <pre>{JSON.stringify(tx, null, 2)}</pre>
+      </div>
+      ); // TODO: add TxElement
     } else {
       content = <p>Not Found</p>;
     }
